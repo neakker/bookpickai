@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BookPick AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Malgun Gothic",sans-serif;color:#241846;background:linear-gradient(160deg,#6b3ee8,#d94fa3,#ff8b5f,#ffd76b);padding:24px}
+.app{max-width:1200px;margin:auto}
+.hero{display:grid;grid-template-columns:330px 1fr;gap:30px;align-items:center;padding:34px 10px}
+.cat-scene{height:300px;border-radius:42px;background:radial-gradient(circle at 50% 55%,#ffd76b 0%,#ff8b5f 38%,#8b4bea 100%);display:grid;place-items:center;box-shadow:0 24px 50px rgba(0,0,0,.25)}
+.chaeknyang-full{
+    .cat-img{
+  width:260px;
+  height:260px;
+  object-fit:contain;
+}
+  width:180px;
+  height:180px;
+  object-fit:contain;
+  border-radius:24px;
+}
+h1{font-size:80px;margin:0;color:#.cafff9e8;text-shadow:0 7px 20px rgba(40,20,100,.35)}
+.subtitle{font-size:26px;color:white;font-weight:1000;text-shadow:0 4px 12px rgba(40,20,100,.35)}
+.panel,.section{background:rgba(255,255,255,.84);border-radius:34px;padding:28px;margin-top:22px;box-shadow:0 20px 45px rgba(50,25,110,.24)}
+.intro{display:grid;grid-template-columns:1fr 360px;gap:24px}
+.cat-card{background:white;border-radius:28px;padding:22px;box-shadow:0 12px 26px rgba(91,63,214,.16);display:flex;gap:18px;align-items:center}
+.cat-mini{font-size:72px}
+label{font-size:20px;font-weight:1000;display:block;margin:18px 0 10px}
+textarea,input,select{width:100%;border:2px solid rgba(91,63,214,.18);border-radius:18px;padding:15px;font-size:17px}
+textarea{min-height:95px}.chips,.age-grid{display:flex;flex-wrap:wrap;gap:12px}
+.chip,.age{border:0;border-radius:999px;padding:13px 18px;background:white;color:#5b3fd6;font-weight:1000;cursor:pointer;box-shadow:0 7px 15px rgba(91,63,214,.12)}
+.age{border-radius:20px;min-width:160px}
+.selected{background:linear-gradient(135deg,#6b3ee8,#d94fa3)!important;color:white!important}
+.main-btn{width:100%;border:0;border-radius:24px;padding:22px;margin-top:24px;font-size:25px;font-weight:1000;color:white;background:linear-gradient(135deg,#6b3ee8,#d94fa3);cursor:pointer;box-shadow:0 15px 32px rgba(91,63,214,.35)}
+.nav button{
+  border:0;
+  background:transparent;
+  color:#241846;
+  font-weight:1000;
+  cursor:pointer;
+  font-size:15px;
+}
+.nav{position:sticky;bottom:12px;background:rgba(255,255,255,.92);border-radius:26px;padding:14px;display:flex;justify-content:space-around;gap:8px;margin-top:24px;box-shadow:0 14px 34px rgba(40,20,90,.25);font-weight:1000}
+.cards,.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card,.box{background:white;border-radius:28px;overflow:hidden;box-shadow:0 14px 32px rgba(50,25,110,.18)}
+.cover{height:220px;display:grid;place-items:center;text-align:center;padding:18px;color:white;font-size:50px;font-weight:1000;background:linear-gradient(145deg,#6a5cff,#ff7ab6,#ffd76b)}
+.cover span{display:block;font-size:21px;margin-top:8px}
+.body,.box{padding:18px}
+.badge{display:inline-block;margin:5px 6px 5px 0;padding:7px 10px;border-radius:999px;background:#f1ecff;color:#5b3fd6;font-weight:900;font-size:13px}
+.source{background:#fff4cf;color:#8b5a00}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.actions button,.small-btn{border:0;border-radius:14px;padding:10px;background:#f1ecff;color:#5b3fd6;font-weight:900;cursor:pointer}
+.note{margin-top:12px;padding:12px;border-radius:16px;background:#fff9e8;color:#5b3fd6;font-weight:1000;display:none}
+.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;font-weight:800}
+.score{font-size:34px;color:#d94fa3;font-weight:1000}
+.locked{opacity:.45}
+.modal{position:fixed;inset:0;background:rgba(31,19,72,.55);display:none;align-items:center;justify-content:center;padding:22px}
+.modal.show{display:flex}
+.modal-card{max-width:520px;background:white;border-radius:30px;padding:26px}
+.options{display:grid;gap:10px}
+.cat-img{
+  width:240px;
+  height:240px;
+  object-fit:contain;
+  display:block;
+}
+@media(max-width:800px){.hero,.intro,.cards,.grid{grid-template-columns:1fr}h1{font-size:48px}.nav{flex-wrap:wrap}.cat-scene{height:230px}}
+</style>
+</head>
+<body>
+<main class="app">
+<section class="hero">
+  <div class="cat-scene">
+  <img src="chaeknyang.png" class="cat-img" alt="책냥">
+</div>
+    <h1>BookPick AI</h1>
+    <p class="subtitle">📚 너에게 딱 맞는 책을 찾아줄게!</p>
+  </div>
+</section>
+
+<section class="panel intro">
+  <div>
+    <label>나의 독서 단계</label>
+    <div class="age-grid">
+      <button class="age selected" data-age="초등 1~3학년">🐣 초등 1~3학년</button>
+      <button class="age" data-age="초등 4~6학년">🦉 초등 4~6학년</button>
+      <button class="age" data-age="중학생">🧙 중학생</button>
+      <button class="age" data-age="고등학생">🚀 고등학생</button>
+    </div>
+
+    <label>나에 대해 알려줘</label>
+    <textarea id="about" placeholder="예: 나는 동물을 좋아하고, 긴 책은 조금 어려워요."></textarea>
+
+    <label>어떤 책을 읽고 싶나요?</label>
+    <div class="chips">
+      <button class="chip">동화</button><button class="chip">소설</button><button class="chip">동물 이야기</button>
+      <button class="chip">변신물</button><button class="chip">판타지</button><button class="chip">모험</button>
+      <button class="chip">과학</button><button class="chip">추리</button><button class="chip">역사</button>
+      <button class="chip">웃긴 책</button><button class="chip">감동적인 책</button>
+    </div>
+
+    <label>책 난이도</label>
+    <select id="level"><option>쉬움</option><option>보통</option><option>조금 어려움</option></select>
+    <button class="main-btn" id="recommendBtn">📚 AI 추천 시작</button>
+  </div>
+
+  <div class="cat-card">
+    <div class="cat-mini">
+  <img src="chaeknyang.png" class="chaeknyang-full" alt="책냥">
+</div>
+</div>
+    <div>
+      <h2>안녕! 나는 책냥이야 😺</h2>
+      <p>책을 사랑하는 마법 고양이야.</p>
+      <p><b>오늘은 어떤 책을 읽고 싶어?</b></p>
+    </div>
+  </div>
+</section>
+
+<section id="resultSection" style="display:none">
+  <h2 style="color:white">책냥이 골라온 책이야 😺✨</h2>
+  <button class="small-btn" id="againBtn">다시 찾기</button>
+  <div class="cards" id="cards"></div>
+  <div class="note" id="note"></div>
+</section>
+
+<section class="section" id="shelfSection" style="display:none">
+<h2>📚 나만의 책장</h2><div id="shelfList"></div>
+</section>
+
+<section class="section" id="rankingSection">
+<div class="grid">
+<div class="box"><h3>👤 내 책법사 프로필</h3><input id="wizardName" value="나"><p id="profileTitle">🥉 브론즈 책법사</p><div class="row"><span>점수</span><b id="profileScore">0점</b></div><div class="row"><span>랭킹</span><b id="profileRank">100위</b></div></div>
+<div class="box"><h3>내 월간 점수</h3><div class="score" id="score">0점</div><p id="league">🥉 브론즈 책법사</p></div>
+<div class="box"><h3>🏆 배지 보관장</h3><div id="badges"></div></div>
+</div>
+<div class="box" style="margin-top:14px"><h3>TOP 100</h3><div id="ranking"></div></div>
+</section>
+
+<section class="section" id="friendSection">
+<h2>🤝 친구 / 독서 클럽</h2>
+<div class="grid">
+<div class="box"><h3>친구 추가</h3><input id="friendName" placeholder="친구 이름"><button class="small-btn" id="addFriend">친구 추가</button></div>
+<div class="box"><h3>내 친구</h3><div id="friends"></div></div>
+<div class="box">
+  <h3>🐈 독서 모임</h3>
+  <input id="clubName" value="책냥 클럽">
+  <select id="clubFriendSelect">
+    <option value="">초대할 친구 선택</option>
+  </select>
+  <button class="small-btn" id="inviteClubFriend">선택한 친구 클럽 초대</button>
+  <div id="clubMembers"></div>
+
+  <div id="clubChat" style="height:180px; overflow-y:auto; background:#f8f8f8; border-radius:12px; padding:10px; margin-top:10px;">
+    <div><b>책냥:</b> 안녕! 📚</div>
+  </div>
+
+  <input id="chatInput" placeholder="메시지를 입력하세요">
+  <button class="small-btn" onclick="sendChat()">보내기</button>
+</div>
+</section>
+
+
+<div class="nav">
+  <button onclick="goTo('homeSection')">🏠 홈</button>
+  <button onclick="goTo('homeSection')">🤖 AI추천</button>
+  <button onclick="goTo('resultSection')">❓ 퀴즈</button>
+  <button onclick="goTo('rankingSection')">🏆 랭킹</button>
+  <button onclick="goTo('friendSection')">👥 친구</button>
+  <button onclick="goTo('friendSection')">🐈 독서클럽</button>
+  <button onclick="goTo('shelfSection')">📚 내책장</button>
+  <button onclick="goTo('rankingSection')">👤 마이페이지</button>
+
+
+<div class="modal" id="quizModal"><div class="modal-card"><h2 id="quizTitle"></h2><p id="quizQuestion"></p><div class="options" id="quizOptions"></div><button class="small-btn" onclick="closeQuiz()">닫기</button></div></div>
+
+<script>
+const books=[
+{title:"강아지똥",genre:["동화","감동적인 책"],age:["초등 1~3학년"],level:"쉬움",source:"📚 국립어린이청소년도서관 추천",mood:"짧고 따뜻한 이야기라서 처음 독서에 잘 맞아요."},
+{title:"마법의 설탕 두 조각",genre:["동화","판타지"],age:["초등 1~3학년","초등 4~6학년"],level:"쉬움",source:"🏫 교육청 추천도서",mood:"상상력이 있고 쉽게 읽을 수 있는 동화예요."},
+{title:"수일이와 수일이",genre:["동화","소설","변신물"],age:["초등 4~6학년"],level:"보통",source:"🏫 교육청 추천도서",mood:"변신과 성장 이야기가 들어 있어 재미있게 읽을 수 있어요."},
+{title:"마당을 나온 암탉",genre:["동물 이야기","소설","감동적인 책"],age:["초등 4~6학년","중학생"],level:"보통",source:"🏫 교육청 추천도서",mood:"동물 이야기지만 꿈과 자유를 생각하게 하는 책이에요."},
+{title:"푸른 사자 와니니",genre:["동물 이야기","모험","소설"],age:["초등 4~6학년","중학생"],level:"보통",source:"📚 국립어린이청소년도서관 추천",mood:"동물과 모험, 성장 이야기를 좋아하는 친구에게 추천해요."},
+{title:"시간 가게",genre:["소설","판타지"],age:["초등 4~6학년","중학생"],level:"보통",source:"🏫 교육청 추천도서",mood:"시간과 선택에 대해 생각하게 하는 판타지 소설이에요."},
+{title:"어린 왕자",genre:["소설","감동적인 책","판타지"],age:["초등 4~6학년","중학생","고등학생"],level:"보통",source:"🏛️ 국립중앙도서관 추천",mood:"상상력과 삶의 의미를 함께 생각하게 하는 책이에요."},
+{title:"해리 포터와 마법사의 돌",genre:["판타지","소설","모험"],age:["초등 4~6학년","중학생"],level:"조금 어려움",source:"사용자 인기 독서",mood:"마법 세계와 모험을 좋아하면 잘 맞아요."},
+{title:"아몬드",genre:["소설","감동적인 책"],age:["중학생","고등학생"],level:"조금 어려움",source:"🏛️ 국립중앙도서관 추천",mood:"감정과 성장에 대해 깊이 생각하게 하는 청소년 소설이에요."}
+];
+
+let selectedAge="초등 1~3학년", selectedGenres=[], shown=[], shelf=[], ratings={}, score=0, badges=["🌱 독서 새싹"], friends=[{name:"민준",score:480},{name:"지우",score:430}], clubMembers=[];
+const players=Array.from({length:99},(_,i)=>({name:"책법사"+(i+1),score:2100-i*20}));
+
+document.querySelectorAll(".age").forEach(b=>b.onclick=()=>{document.querySelectorAll(".age").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");selectedAge=b.dataset.age});
+document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{b.classList.toggle("selected");selectedGenres=[...document.querySelectorAll(".chip.selected")].map(x=>x.textContent)});
+
+function recommend(){
+ if(!selectedGenres.length){alert("읽고 싶은 책 종류를 하나 이상 골라줘!");return}
+ let level=document.getElementById("level").value;
+ let pool=books.map(b=>({...b,score:calc(b,level)})).filter(b=>!shown.includes(b.title)).sort((a,b)=>b.score-a.score);
+ if(pool.length<3){shown=[];pool=books.map(b=>({...b,score:calc(b,level)})).sort((a,b)=>b.score-a.score)}
+ let picked=pool.slice(0,3);picked.forEach(b=>shown.push(b.title));renderCards(picked);document.getElementById("resultSection").style.display="block";
+}
+function calc(b,level){let s=0;if(b.age.includes(selectedAge))s+=5;if(b.level===level)s+=3;selectedGenres.forEach(g=>{if(b.genre.includes(g))s+=4});return s+Math.random()}
+function renderCards(list){document.getElementById("cards").innerHTML=list.map(b=>`<article class="card"><div class="cover">📖<span>${b.title}</span></div><div class="body"><h3>${b.title}</h3><p>${selectedAge} 단계에서 ${b.mood}</p><span class="badge source">${b.source}</span><span class="badge">${b.level}</span><div class="actions"><button onclick="saveBook('${b.title}')">책장 저장</button><button onclick="shareBook('${b.title}')">친구 추천</button><button onclick="openQuiz('${b.title}')">퀴즈</button><button onclick="rateBook('${b.title}','좋았어 👍')">좋았어 👍</button></div></div></article>`).join("")}
+function note(m){let n=document.getElementById("note");n.textContent=m;n.style.display="block";setTimeout(()=>n.style.display="none",2500)}
+function addScore(p,r){score+=p;update();note(`${r} +${p}점!`)}
+function saveBook(t){if(!shelf.includes(t)){shelf.push(t);addScore(10,"책장 저장")}renderShelf()}
+function rateBook(t,r){ratings[t]=r;addScore(5,"책 평가");renderShelf()}
+function renderShelf(){document.getElementById("shelfSection").style.display="block";document.getElementById("shelfList").innerHTML=shelf.map(t=>`<div class="row"><span>${t}</span><b>${ratings[t]||"저장됨"}</b></div>`).join("")}
+function openQuiz(t){document.getElementById("quizTitle").textContent=t+" 퀴즈";document.getElementById("quizQuestion").textContent="이 책에서 가장 중요하게 볼 것은?";document.getElementById("quizOptions").innerHTML=`<button onclick="answerQuiz(true)">주인공이 어떤 문제를 해결하는지</button><button onclick="answerQuiz(false)">표지 색깔만 보기</button>`;document.getElementById("quizModal").classList.add("show")}
+function closeQuiz(){document.getElementById("quizModal").classList.remove("show")}
+function answerQuiz(ok){closeQuiz();ok?addScore(30,"퀴즈 정답"):note("아쉽다!")}
+function league(){if(score>=1000)return"🥇 골드 책법사";if(score>=500)return"🥈 실버 책법사";return"🥉 브론즈 책법사"}
+function update(){document.getElementById("score").textContent=score+"점";document.getElementById("league").textContent=league();document.getElementById("profileTitle").textContent=league();document.getElementById("profileScore").textContent=score+"점";renderBadges();renderRanking();renderFriends()}
+function renderBadges(){let all=["🌱 독서 새싹","📚 책장 수집가","🧙 책법사 입문","🏆 퀴즈 도전자"];document.getElementById("badges").innerHTML=all.map(b=>`<div class="row ${badges.includes(b)?"":"locked"}"><span>${b}</span><b>${badges.includes(b)?"획득":"잠김"}</b></div>`).join("")}
+function getName(){return document.getElementById("wizardName").value||"나"}
+function renderRanking(){let rank=[...players,{name:getName(),score,isMe:true}].sort((a,b)=>b.score-a.score).slice(0,100);let idx=rank.findIndex(p=>p.isMe)+1;document.getElementById("profileRank").textContent=idx+"위";document.getElementById("ranking").innerHTML=rank.map((p,i)=>`<div class="row" ${p.isMe?'style="color:#d94fa3"':""}><span>${i+1}위 ${p.name}</span><b>${p.score}점</b></div>`).join("")}
+function addFriend(){let name=document.getElementById("friendName").value.trim();if(!name)return;friends.push({name,score:Math.floor(300+Math.random()*600)});document.getElementById("friendName").value="";renderFriends()}
+function renderFriends(){document.getElementById("friends").innerHTML=friends.map(f=>`<div class="row"><span>${f.name}</span><b>${f.score}점</b></div>`).join("");document.getElementById("clubFriendSelect").innerHTML='<option value="">초대할 친구 선택</option>'+friends.map(f=>`<option>${f.name}</option>`).join("")}
+function shareBook(t){note(friends[0].name+"에게 "+t+" 추천 완료!");addScore(3,"친구 추천")}
+function inviteClub(){let v=document.getElementById("clubFriendSelect").value;if(!v)return note("친구를 선택해줘");if(!clubMembers.includes(v))clubMembers.push(v);document.getElementById("clubMembers").innerHTML=clubMembers.map(x=>`<div class="row"><span>${x}</span><b>참여중</b></div>`).join("")}
+document.getElementById("recommendBtn").onclick=recommend;document.getElementById("againBtn").onclick=recommend;document.getElementById("addFriend").onclick=addFriend;document.getElementById("inviteClubFriend").onclick=inviteClub;document.getElementById("wizardName").oninput=update;
+function goTo(id){
+  const section = document.getElementById(id);
+  if(section){
+    section.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+}
+
+update();renderFriends();
+</script>
+</body>
+</body>
+</html>
